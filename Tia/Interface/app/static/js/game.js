@@ -134,14 +134,16 @@ function orderCommand(order){
 
 
 function move(who,carte){
+    console.log("tamère")
     let move_ok_1 = true;
     let move_ok_2 = true;
     let move_ok_3 = true;
+    let move_change=false;
     let chance = [-3,-2,-1,1,2,3]
     which_player = players["turn_player"];
-    let temporarie =[]
-    temporarie= players[which_player][who]
-    console.log(temporarie)
+    let tmp =[]
+    tmp= players[which_player][who]
+    console.log(tmp)
     let all_player_coord =[]
     for(let l=1;l<=3;l++){
     all_player_coord.push(players["Italie"][l],players["Hollande"][l],players["Belgique"][l],players["Allemagne"][l])
@@ -172,12 +174,14 @@ function move(who,carte){
                         if(map[final_movement_str] !== undefined){
                             players[which_player][who][0] = players[which_player][who][0]+carte+1;
                             players[which_player][who][1] = 0;
+                            move_change = true;
                         }
                     }
                     else if(move_ok_2===true){
                         if(map[final_movement_str_1] !== undefined){
                             players[which_player][who][0] = players[which_player][who][0]+carte+1;
                             players[which_player][who][1] = 1;
+                            move_change = true;
                         }
                     }
 
@@ -185,11 +189,13 @@ function move(who,carte){
                         if(map[final_movement_str_2] !== undefined){
                             players[which_player][who][0] = players[which_player][who][0]+carte+1;
                             players[which_player][who][1] = 2;
+                            move_change = true;
                         }
                         else{ // Si elle existe pas mettre sur la case 1 car la case 2 est déjà occupée donc crash
                             if(map[final_movement_str] !== undefined){
                                 players[which_player][who][0] = players[which_player][who][0]+carte;
                                 players[which_player][who][1] = 0;
+                                move_change = true;
                                 //crash function
                                 crash(players[which_player][who][0])
                                 pioche()  
@@ -200,6 +206,7 @@ function move(who,carte){
                         if(map[final_movement_str] !== undefined){
                             players[which_player][who][0] = players[which_player][who][0]+carte+1;
                             players[which_player][who][1] = 0;
+                            move_change = true;
                             //crash function
                             crash(players[which_player][who][0])
                             pioche()
@@ -236,12 +243,14 @@ function move(who,carte){
                         if(map[final_movement_str] !== undefined){ // Si la case 1 est dans la map(pas en dehors du plateau)
                             players[which_player][who][0] = players[which_player][who][0]+carte;
                             players[which_player][who][1] = 0;
+                            move_change = true;
                         }
                     }
                     else if(move_ok_2===true){//Si la case 2 est libre
                         if(map[final_movement_str_1] !== undefined){ // Si la case 2 est dans la map(pas en dehors du plateau)
                             players[which_player][who][0] = players[which_player][who][0]+carte;
                             players[which_player][who][1] = 1;
+                            move_change = true;
                         }
                     }
 
@@ -249,11 +258,13 @@ function move(who,carte){
                         if(map[final_movement_str_2] !== undefined){// Si la case 3 est dans la map(pas en dehors du plateau)
                             players[which_player][who][0] = players[which_player][who][0]+carte;
                             players[which_player][who][1] = 2;
+                            move_change = true;
                         }
                         else{ // Si elle existe pas mettre sur la case 1 car la case 2 est déjà occupée donc crash
                             if(map[final_movement_str] !== undefined){
                                 players[which_player][who][0] = players[which_player][who][0]+carte;
                                 players[which_player][who][1] = 0;
+                                move_change = true;
                                 //crash function
                                 crash(players[which_player][who][0])
                                 pioche()  
@@ -264,6 +275,7 @@ function move(who,carte){
                         if(map[final_movement_str] !== undefined){
                             players[which_player][who][0] = players[which_player][who][0]+carte;
                             players[which_player][who][1] = 0;
+                            move_change = true;
                             //crash function
                             crash(players[which_player][who][0])
                             pioche()
@@ -272,8 +284,8 @@ function move(who,carte){
                     break; 
                 } 
             }
-            console.log("temporarie "+temporarie)
-            if(temporarie=== players[which_player][who]){
+            console.log(tmp)
+            if(move_change = false){
                 console.log("ICIIIII 1")
                 let x_movement = players[which_player][who][0]+carte;
                 let y_movement = 0;
@@ -366,7 +378,7 @@ function move(who,carte){
     //retirer LA CARTE utilisée 
     console.log("yoooo  "+players[which_player]["cards"]["card"])
     let index = players[which_player]["cards"]["card"].indexOf(carte);
-    console.log("index"+index) //=-1 ?
+    console.log("index"+index) 
     players[which_player]["cards"]["card"].splice(index,1);
     players[which_player]["cards"]["number"] -=1;
     pioche()
@@ -451,6 +463,7 @@ function drawCircle(x, y, color){
 
   
 function order_get(){
+    console.log("click click click")
     var order_game = document.getElementById('order').value;
     document.getElementById('order').value = ""; //reset the input when we added the task
     console.log(order_game)
