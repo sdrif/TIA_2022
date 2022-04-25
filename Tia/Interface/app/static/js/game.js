@@ -128,10 +128,12 @@ function pioche(){
 }
 
 function orderCommand(order){
-    instruction = order.split("-")
-    instruction2= parseInt(instruction[2])
+    let instruction = order.split("-")
+    let instruction2= parseInt(instruction[2])
     let which_player= players["turn_player"]
-    if(instruction2 in players[which_player]["cards"]["card"]){
+    console.log(players[which_player]["cards"]["card"])
+    console.log(instruction2)
+    if(players[which_player]["cards"]["card"].includes(instruction2)){
         move(instruction[0],instruction2)
     }
     else{

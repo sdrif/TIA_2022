@@ -106,3 +106,12 @@ console.log(typeof players["Italie"]["cards"]["card"][0])
 if(carte in players["Italie"]["cards"]["card"]){
     console.log("yesss")
 }
+
+let ok = [10, 8, 9, 10, 8]
+let instruction = 4
+if(ok.includes(instruction)){
+    console.log("ok")
+}
+else{
+    console.log("no")
+}
