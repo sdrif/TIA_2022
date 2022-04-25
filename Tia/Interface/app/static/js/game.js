@@ -138,16 +138,14 @@ function move(who,carte){
     let move_ok_2 = true;
     let move_ok_3 = true;
     let chance = [-3,-2,-1,1,2,3]
-    let all_player_coord=[]
+    which_player = players["turn_player"];
+    let temporarie =[]
+    temporarie= players[which_player][who]
+    console.log(temporarie)
+    let all_player_coord =[]
     for(let l=1;l<=3;l++){
     all_player_coord.push(players["Italie"][l],players["Hollande"][l],players["Belgique"][l],players["Allemagne"][l])
     }
-    which_player = players["turn_player"];
-    console.log(which_player)
-    console.log(carte)
-    console.log(players[which_player]["cards"]["card"][0])
-    console.log(players[which_player]["cards"]["card"])
-    let temp= players[which_player][who]
     if(carte in players[which_player]["cards"]["card"]){
         for(var i = 0; i < all_player_coord.length; i++){
             if((players[which_player][who][0] + carte+1 === all_player_coord[i][0]) ||players[which_player][who][0] + carte+1 == all_player_coord[i][0]-1){ //arrive a coté d'un joueur avec l'ASPI ou derrière
@@ -274,7 +272,8 @@ function move(who,carte){
                     break; 
                 } 
             }
-            if(temp=== players[which_player][who]){
+            console.log("temporarie "+temporarie)
+            if(temporarie=== players[which_player][who]){
                 console.log("ICIIIII 1")
                 let x_movement = players[which_player][who][0]+carte;
                 let y_movement = 0;
@@ -367,7 +366,7 @@ function move(who,carte){
     //retirer LA CARTE utilisée 
     console.log("yoooo  "+players[which_player]["cards"]["card"])
     let index = players[which_player]["cards"]["card"].indexOf(carte);
-    console.log(index) //=-1 ?
+    console.log("index"+index) //=-1 ?
     players[which_player]["cards"]["card"].splice(index,1);
     players[which_player]["cards"]["number"] -=1;
     pioche()
@@ -476,8 +475,4 @@ function order_get(){
         draw();
     }
 }
-
-
-
-
 
