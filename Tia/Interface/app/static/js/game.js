@@ -22,6 +22,7 @@ let players = {
     2:[3,1],
     3:[4,0], 
     cards:{number:0,card:[]}},
+
     turn_player:"Italie"
 };
 
@@ -129,26 +130,27 @@ function pioche(){
 function orderCommand(order){
     instruction = order.split("-")
     instruction2= parseInt(instruction[2])
-    move(instruction[0],instruction2)
+    let which_player= players["turn_player"]
+    if(instruction2 in players[which_player]["cards"]["card"]){
+        move(instruction[0],instruction2)
+    }
+    else{
+        throw new Error("You don\'t have this card")
+    }
 }
 
 
 function move(who,carte){
-    console.log("tamère")
     let move_ok_1 = true;
     let move_ok_2 = true;
     let move_ok_3 = true;
     let move_change=false;
     let chance = [-3,-2,-1,1,2,3]
     which_player = players["turn_player"];
-    let tmp =[]
-    tmp= players[which_player][who]
-    console.log(tmp)
     let all_player_coord =[]
     for(let l=1;l<=3;l++){
     all_player_coord.push(players["Italie"][l],players["Hollande"][l],players["Belgique"][l],players["Allemagne"][l])
     }
-    if(carte in players[which_player]["cards"]["card"]){
         for(var i = 0; i < all_player_coord.length; i++){
             if((players[which_player][who][0] + carte+1 === all_player_coord[i][0]) ||players[which_player][who][0] + carte+1 == all_player_coord[i][0]-1){ //arrive a coté d'un joueur avec l'ASPI ou derrière
                 let x_movement = players[which_player][who][0]+carte+1;
@@ -262,11 +264,16 @@ function move(who,carte){
                         }
                         else{ // Si elle existe pas mettre sur la case 1 car la case 2 est déjà occupée donc crash
                             if(map[final_movement_str] !== undefined){
+                                console.log("salutttt")
+                                console.log(who)
+                                console.log("YOOOOOOOOOO  "+players[which_player][who][0])
                                 players[which_player][who][0] = players[which_player][who][0]+carte;
                                 players[which_player][who][1] = 0;
                                 move_change = true;
-                                //crash function
-                                crash(players[which_player][who][0])
+                                //crash function Fait crash le code par la même occasion change les X de tous les pays par celui ou je veux aller
+                                let x=players[which_player][who][0]
+                                crash(x)
+                                console.log(which_player)
                                 pioche()  
                             }
                         }
@@ -279,12 +286,12 @@ function move(who,carte){
                             //crash function
                             crash(players[which_player][who][0])
                             pioche()
+                            
                         }
                     }
                     break; 
                 } 
             }
-            console.log(tmp)
             if(move_change = false){
                 console.log("ICIIIII 1")
                 let x_movement = players[which_player][who][0]+carte;
@@ -295,10 +302,6 @@ function move(who,carte){
                     players[which_player][who][1] = 0;
                 }
             }
-        }
-    else{
-        throw new Error("You don\'t have this card")
-    }
         /** Fin */
     //Verifier si pas sur une case chance
     let move_1 = true;
@@ -307,8 +310,8 @@ function move(who,carte){
     for(let o=0;o<chance_case.length;o++){
         if(players[which_player][who][0] ===chance_case[o][0] && players[which_player][who][1] === chance_case[o][1]){
             var rand = Math.floor(Math.random()*chance.length);
-            var rValue = myArray[rand];
-            let temp = players[which_player][who][0]+rValue;
+            var rValue2 = myArray[rand];
+            let temp = players[which_player][who][0]+rValue2;
             
             let x_movement_chance = temp;
             let y_movement_chance =0;
@@ -376,9 +379,7 @@ function move(who,carte){
         }
         
     //retirer LA CARTE utilisée 
-    console.log("yoooo  "+players[which_player]["cards"]["card"])
     let index = players[which_player]["cards"]["card"].indexOf(carte);
-    console.log("index"+index) 
     players[which_player]["cards"]["card"].splice(index,1);
     players[which_player]["cards"]["number"] -=1;
     pioche()
@@ -386,18 +387,18 @@ function move(who,carte){
 }
 pioche()
 console.log(players["Italie"]["cards"]["card"])
+
 function crash(x){
-    for(playerss in players){
-        if(playerss !== "turn_player"){
-        for(let j=1;j<=3;j++){
-            if(players[playerss][j][0]=x){
-                console.log(players[playerss]["cards"]["card"].length)
-                let rando= Math.floor(Math.random()*players[playerss]["cards"]["card"].length);
-                let rValue = players[playerss]["cards"]["card"][rando];
-                let index = players[playerss]["cards"]["card"].indexOf(rValue)
-                players[playerss]["cards"]["card"].splice(index,1)
-                players[playerss]["cards"]["number"] -=1;
-            }
+    for(element in players){
+        if(element !== "turn_player"){
+            for(let j=1;j<=3;j++){
+                if(players[element][j][0]=x){
+                    let rando= Math.floor(Math.random()*players[element]["cards"]["card"].length);
+                    let rValue = players[element]["cards"]["card"][rando];
+                    let index = players[element]["cards"]["card"].indexOf(rValue)
+                    players[element]["cards"]["card"].splice(index,1)
+                    players[element]["cards"]["number"] -=1;
+                }
             }
         }
     }
@@ -406,7 +407,7 @@ function crash(x){
 
 
 //------------------------------------Draw-------------------------------------------
-//plateau
+
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 var image = document.getElementById("plateau")
@@ -472,7 +473,6 @@ function order_get(){
 
     } else {
         orderCommand(order_game);
-        console.log(players["Italie"])
         if(players["turn_player"]=="Italie"){
             players["turn_player"] = "Hollande";
         }
