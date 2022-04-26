@@ -394,16 +394,18 @@ function crash(x){
     for(element in players){
         if(element !== "turn_player"){
             for(let j=1;j<=3;j++){
-                if(players[element][j][0]=x){
+                if(players[element][j][0]===x){
                     let rando= Math.floor(Math.random()*players[element]["cards"]["card"].length);
                     let rValue = players[element]["cards"]["card"][rando];
                     let index = players[element]["cards"]["card"].indexOf(rValue)
                     players[element]["cards"]["card"].splice(index,1)
                     players[element]["cards"]["number"] -=1;
+                    break;
                 }
             }
         }
     }
+    console.log(players)
 }
 
 
