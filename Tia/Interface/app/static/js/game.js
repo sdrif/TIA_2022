@@ -430,17 +430,6 @@ canvas.width= 1200;
 canvas.height = 700;
 
 
-function getCursorPosition(canvas, event) {
-    const rect = canvas.getBoundingClientRect()
-    const x = event.clientX - rect.left
-    const y = event.clientY - rect.top
-    console.log("x: " + x + " y: " + y)
-}
-
-canvas.addEventListener('mousedown', function(e) {
-    getCursorPosition(canvas, e)
-})
-
 function draw(){
     let player =  players["turn_player"];
     document.getElementById("player").innerHTML = player;
@@ -514,7 +503,5 @@ function order_get(){
     }
 }
 
-ctx.beginPath();
-ctx.arc(388,340, 20, 0, Math.PI *2, false);
-ctx.stroke();
+
 

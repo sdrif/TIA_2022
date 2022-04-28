@@ -115,3 +115,19 @@ if(ok.includes(instruction)){
 else{
     console.log("no")
 }
+
+/**
+ function getCursorPosition(canvas, event) {
+    const rect = canvas.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const y = event.clientY - rect.top
+    console.log("x: " + x + " y: " + y)
+}
+
+canvas.addEventListener('mousedown', function(e) {
+    getCursorPosition(canvas, e)
+})
+ctx.beginPath();
+ctx.arc(388,340, 20, 0, Math.PI *2, false);
+ctx.stroke();
+ */
