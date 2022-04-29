@@ -90,6 +90,9 @@ let map={"0,0":[123,86],"1,0":[177,86],"2,0":[230,86],"3,0":[285,86],"4,0":[337,
 "45,0":[70,643],"46,0":[70,542],"47,0":[70,492],"48,0":[70,441],
 /**4ieme tournant */"49,0":[70,340],
 
+//Tournant 3, 3ieme ligne
+"45,2":[176,542],
+
 /** Deuxième ligne quatrième tournant */
 "45,1":[122,591],"46,1":[122,542],"47,1":[122,492],"48,1":[122,441],
 "49,1":[122,391]/**4ieme tournant */,
@@ -430,9 +433,14 @@ canvas.width= 1200;
 canvas.height = 700;
 
 
+
 function draw(){
     let player =  players["turn_player"];
     document.getElementById("player").innerHTML = player;
+    document.getElementById("Italie").innerHTML = players["Italie"]["cards"]["card"];
+    document.getElementById("Hollande").innerHTML = players["Hollande"]["cards"]["card"];
+    document.getElementById("Belgique").innerHTML = players["Belgique"]["cards"]["card"];
+    document.getElementById("Allemagne").innerHTML = players["Allemagne"]["cards"]["card"];
     spanText = document.querySelector('b');
     var color = "blue";
     if(player == "Italie"){
@@ -478,7 +486,6 @@ function drawCircle(x, y, color){
 
   
 function order_get(){
-    console.log("click click click")
     var order_game = document.getElementById('order').value;
     document.getElementById('order').value = ""; //reset the input when we added the task
     console.log(order_game)
@@ -502,6 +509,4 @@ function order_get(){
         draw();
     }
 }
-
-
 

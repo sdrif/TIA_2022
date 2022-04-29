@@ -21,3 +21,9 @@ a.bleu{
     color:blue
 }
 
+.Cartes{
+    position: absolute;
+    margin-left: 18px;
+    top: 45%;
+
+}
