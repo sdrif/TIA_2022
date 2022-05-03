@@ -3,25 +3,29 @@
 
 //Players dictionnary
 let players = {
-    Italie:{1:[0,0],
+    Italie:{1:[58,0],
     2:[0,1],
     3:[0,2], 
-    cards:{number:0,card:[]}},
+    cards:{number:0,card:[]}
+    ,aspiration:false,total:0},
 
     Hollande:{1:[1,0], //robot
     2:[1,1],
     3:[1,2], 
-    cards:{number:0,card:[]}},
+    cards:{number:0,card:[]},
+    aspiration:false,total:0},
 
     Belgique:{1:[2,0],
     2:[2,1],
     3:[2,2], 
-    cards:{number:0,card:[]}},
+    cards:{number:0,card:[]},
+    aspiration:false,total:0},
 
     Allemagne:{1:[3,0], //robot
     2:[3,1],
     3:[4,0], 
-    cards:{number:0,card:[]}},
+    cards:{number:0,card:[]},
+    aspiration:false,total:0},
 
     turn_player:"Italie"
 };
@@ -103,17 +107,20 @@ let map={"0,0":[123,86],"1,0":[177,86],"2,0":[230,86],"3,0":[285,86],"4,0":[337,
 /**Arrivée 1 ligne */
 "50,0":[176,340],"51,0":[229,340],"52,0":[283,340],
 "53,0":[335,340],"54,0":[388,340],"55,0":[442,340],"56,0":[495,340],"57,0":[548,340],
-"58,0":[600,340]/** chance */,"59,0":[653,340],"60,0":[705,340],"61,0":[758,340]/**arrivée */,"62,0":[811,340],"63,0":[865,340],
+"58,0":[600,340]/** chance */,"59,0":[653,340],"60,0":[705,340],"61,0":[758,340]/**arrivée */,"62,0":[811,340],"63,0":[865,340],"64,0":[0,0],"65,0":[0,0],"66,0":[0,0]
+,"67,0":[0,0],"68,0":[0,0],"69,0":[0,0],"70,0":[0,0],"71,0":[0,0],"72,0":[0,0],
 
 /** Deuxième ligne arrivée */
 "50,1":[176,391],"51,1":[229,391],"52,1":[283,391],
 "53,1":[335,391],"54,1":[388,391],"55,1":[442,391],"56,1":[495,391],"57,1":[548,391],
-"58,1":[600,391],"59,1":[653,391],"60,1":[705,391],"61,1":[758,391]/**arrivée */,"62,1":[811,391],"63,1":[865,391],
+"58,1":[600,391],"59,1":[653,391],"60,1":[705,391],"61,1":[758,391]/**arrivée */,"62,1":[811,391],"63,1":[865,391],"64,1":[0,0],"65,1":[0,0],"66,1":[0,0]
+,"67,1":[0,0],"68,1":[0,0],"69,1":[0,0],"70,1":[0,0],"71,1":[0,0],"72,1":[0,0],
 
 /**Troisième ligne arrivée */
-"54,2":[388,441],"55,2":[442,441],"56,2":[495,441],"61,2":[758,441]/**arrivée */,"62,2":[811,441],"63,2":[865,441]}
+"54,2":[388,441],"55,2":[442,441],"56,2":[495,441],"61,2":[758,441]/**arrivée */,"62,2":[811,441],"63,2":[865,441],"64,2":[0,0],"65,2":[0,0],"66,2":[0,0]
+,"67,2":[0,0],"68,2":[0,0],"69,2":[0,0],"70,2":[0,0],"71,2":[0,0],"72,2":[0,0]}
 
-
+//61 =96
 
 function cards_probability(cards_list){
     var random_cards = [];
@@ -145,10 +152,13 @@ function orderCommand(order){
     let instruction = order.split("-")
     let instruction2= parseInt(instruction[2])
     let which_player= players["turn_player"]
-    console.log(players[which_player]["cards"]["card"])
-    console.log(instruction2)
     if(players[which_player]["cards"]["card"].includes(instruction2)){
-        move(instruction[0],instruction2)
+        if(players[which_player][instruction[0]][0]===-1){
+            throw new Error('This player is already on the finish line.')
+        }
+        else{
+            move(instruction[0],instruction2)
+        }   
     }
     else{
         throw new Error("You don\'t have this card")
@@ -168,7 +178,7 @@ function move(who,carte){
     all_player_coord.push(players["Italie"][l],players["Hollande"][l],players["Belgique"][l],players["Allemagne"][l])
     }
         for(var i = 0; i < all_player_coord.length; i++){
-            if((players[which_player][who][0] + carte+1 === all_player_coord[i][0]) ||players[which_player][who][0] + carte+1 == all_player_coord[i][0]-1){ //arrive a coté d'un joueur avec l'ASPI ou derrière
+            if(((players[which_player][who][0] + carte+1 === all_player_coord[i][0]) ||players[which_player][who][0] + carte+1 == all_player_coord[i][0]-1)&& players[which_player]["aspiration"]===true){ //arrive a coté d'un joueur avec l'ASPI ou derrière
                 let x_movement = players[which_player][who][0]+carte+1;
                 let y_movement = 0;
                 let final_movement_str = x_movement.toString()+ "," + y_movement.toString();
@@ -176,7 +186,6 @@ function move(who,carte){
                 let final_movement_str_1 =x_movement.toString()+ "," + y_movement.toString();
                 y_movement+=1
                 let final_movement_str_2 =x_movement.toString()+ "," + y_movement.toString();
-                
                 for(let k=0;k<all_player_coord.length; k++){ 
                     if( 0 === all_player_coord[k][1] && all_player_coord[k][0] === players[which_player][who][0]+carte+1){
                         move_ok_1 =false;
@@ -235,7 +244,6 @@ function move(who,carte){
             
                 
             else if(players[which_player][who][0] + carte === all_player_coord[i][0]){ //arrive sur un joueur sans aspi
-                console.log("iciiiiii")
                 let x_movement = players[which_player][who][0]+carte;
                 let y_movement = 0;
                 let final_movement_str = x_movement.toString()+ "," + y_movement.toString();
@@ -280,9 +288,6 @@ function move(who,carte){
                         }
                         else{ // Si elle existe pas mettre sur la case 1 car la case 2 est déjà occupée donc crash
                             if(map[final_movement_str] !== undefined){
-                                console.log("salutttt")
-                                console.log(who)
-                                console.log("YOOOOOOOOOO  "+players[which_player][who][0])
                                 players[which_player][who][0] = players[which_player][who][0]+carte;
                                 players[which_player][who][1] = 0;
                                 move_change = true;
@@ -308,8 +313,7 @@ function move(who,carte){
                     break; 
                 } 
             }
-            if(move_change = false){
-                console.log("ICIIIII 1")
+            if(move_change === false){
                 let x_movement = players[which_player][who][0]+carte;
                 let y_movement = 0;
                 let final_movement_str = x_movement.toString()+ "," + y_movement.toString();
@@ -326,7 +330,7 @@ function move(who,carte){
     for(let o=0;o<chance_case.length;o++){
         if(players[which_player][who][0] ===chance_case[o][0] && players[which_player][who][1] === chance_case[o][1]){
             var rand = Math.floor(Math.random()*chance.length);
-            var rValue2 = myArray[rand];
+            var rValue2 = chance[rand];
             let temp = players[which_player][who][0]+rValue2;
             
             let x_movement_chance = temp;
@@ -399,6 +403,12 @@ function move(who,carte){
     players[which_player]["cards"]["card"].splice(index,1);
     players[which_player]["cards"]["number"] -=1;
     pioche()
+    if(players[which_player][who][0]>60){
+       let x_value= players[which_player][who][0] -60;
+       players[which_player]["total"]+=61-x_value;
+       players[which_player][who][0]= -1;
+       console.log(players[which_player]["total"])
+    }
     
 }
 pioche()
@@ -441,6 +451,7 @@ function draw(){
     document.getElementById("Hollande").innerHTML = players["Hollande"]["cards"]["card"];
     document.getElementById("Belgique").innerHTML = players["Belgique"]["cards"]["card"];
     document.getElementById("Allemagne").innerHTML = players["Allemagne"]["cards"]["card"];
+    document.getElementById("Aspi").innerHTML = players[player]["aspiration"];
     spanText = document.querySelector('b');
     var color = "blue";
     if(player == "Italie"){
@@ -465,11 +476,20 @@ function draw(){
     //on dessine tous les pions  
 
     for(let i =1; i<= 3; i++){
-        drawCircle(map[players["Italie"][i][0].toString()+','+players["Italie"][i][1].toString()][0], map[players["Italie"][i][0].toString()+','+players["Italie"][i][1].toString()][1], "blue");
-        drawCircle(map[players["Hollande"][i][0].toString()+','+players["Hollande"][i][1].toString()][0], map[players["Hollande"][i][0].toString()+','+players["Hollande"][i][1].toString()][1], "orange")
-        drawCircle(map[players["Belgique"][i][0].toString()+','+players["Belgique"][i][1].toString()][0], map[players["Belgique"][i][0].toString()+','+players["Belgique"][i][1].toString()][1], "red") 
-        drawCircle(map[players["Allemagne"][i][0].toString()+','+players["Allemagne"][i][1].toString()][0], map[players["Allemagne"][i][0].toString()+','+players["Allemagne"][i][1].toString()][1], "white")
-}
+        console.log("iciiii")
+        if(players["Italie"][i][0] !== -1){
+            drawCircle(map[players["Italie"][i][0].toString()+','+players["Italie"][i][1].toString()][0], map[players["Italie"][i][0].toString()+','+players["Italie"][i][1].toString()][1], "blue");
+        }
+        if(players["Hollande"][i][0] !== -1){
+            drawCircle(map[players["Hollande"][i][0].toString()+','+players["Hollande"][i][1].toString()][0], map[players["Hollande"][i][0].toString()+','+players["Hollande"][i][1].toString()][1], "orange")
+        }
+        if(players["Belgique"][i][0] !== -1){
+            drawCircle(map[players["Belgique"][i][0].toString()+','+players["Belgique"][i][1].toString()][0], map[players["Belgique"][i][0].toString()+','+players["Belgique"][i][1].toString()][1], "red") 
+        }
+        if(players["Allemagne"][i][0] !== -1){
+            drawCircle(map[players["Allemagne"][i][0].toString()+','+players["Allemagne"][i][1].toString()][0], map[players["Allemagne"][i][0].toString()+','+players["Allemagne"][i][1].toString()][1], "white")
+        }
+     }
 }
 draw()
 function drawCircle(x, y, color){
@@ -507,6 +527,44 @@ function order_get(){
             players["turn_player"] = "Italie";
         }
         draw();
+        end_game()
     }
 }
 
+function changement_aspi(){
+    who = players["turn_player"]
+    if(players[who]["aspiration"]===false){
+        players[who]["aspiration"]=true;
+    }
+    else{
+        players[who]["aspiration"]=false
+    }
+    draw()
+}
+
+function end_game(){
+    count=0
+    for(element in players){
+        if(element !== "turn_player"){
+            for(let j=1;j<=3;j++){
+                if(players[element][j][0]===-1){
+                    count+=1
+                }
+            }
+        }
+    }
+    if(count ===9){
+        if(players["Italie"]["total"]<players["Allemagne"]["total"] && players["Italie"]["total"]< players["Belgique"]["total"] && players["Italie"]["total"]< players["Hollande"]["total"]){
+            alert("Italie WIN THE GAME")
+        }
+        else if(players["Allemagne"]["total"]<players["Italie"]["total"] && players["Allemagne"]["total"]< players["Belgique"]["total"] && players["Allemagne"]["total"]< players["Hollande"]["total"]){
+            alert("Allemagne WIN THE GAME")
+        }
+        else if(players["Belgique"]["total"]<players["Italie"]["total"] && players["Belgique"]["total"]< players["Allemagne"]["total"] && players["Belgique"]["total"]< players["Hollande"]["total"]){
+            alert("Belgique WIN THE GAME")
+        }
+        else{
+            alert("Hollande WIN THE GAME")
+        }
+    }
+}

@@ -36,10 +36,15 @@
     <canvas><img id ="plateau" src="./img/Tia_plateau_final.jpg"></canvas>
     <div class="container">
         <h3>Play</h3>
-        <p>Au tour du joueur <b id="player"></b> de jouer.</p>
+        <p>Au tour du joueur <b id="player"></b> de jouer. Aspiration= <n id="Aspi"></n></p>
         <div class="input-group mb-3">
             <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" placeholder="Ajouter une commande tel que : 2-avance-5 " id="order">
             <input type="button" id='Order' onclick="order_get();" value='Jouer' class="btn btn-primary mr-2">
+            <input type="button" id='Order' onclick="changement_aspi();" value='Aspiration' class="btn btn-primary mr-2">
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" placeholder="Une question sur le jeu? Je vous écoute" id="order">
+            <input type="button" id='Order' onclick="appelbot()" value='Poser' class="btn btn-primary mr-2">
         </div>
     </div>
     <script src="./Interface/app/static/js/game.js"></script>

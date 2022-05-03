@@ -130,4 +130,14 @@ canvas.addEventListener('mousedown', function(e) {
 ctx.beginPath();
 ctx.arc(388,340, 20, 0, Math.PI *2, false);
 ctx.stroke();
- */
+ 
+
+for(let i =1; i<= 3; i++){
+        console.log("iciiii")
+        drawCircle(map[players["Italie"][i][0].toString()+','+players["Italie"][i][1].toString()][0], map[players["Italie"][i][0].toString()+','+players["Italie"][i][1].toString()][1], "blue");
+        drawCircle(map[players["Hollande"][i][0].toString()+','+players["Hollande"][i][1].toString()][0], map[players["Hollande"][i][0].toString()+','+players["Hollande"][i][1].toString()][1], "orange")
+        drawCircle(map[players["Belgique"][i][0].toString()+','+players["Belgique"][i][1].toString()][0], map[players["Belgique"][i][0].toString()+','+players["Belgique"][i][1].toString()][1], "red") 
+        drawCircle(map[players["Allemagne"][i][0].toString()+','+players["Allemagne"][i][1].toString()][0], map[players["Allemagne"][i][0].toString()+','+players["Allemagne"][i][1].toString()][1], "white")
+}
+
+*/
