@@ -1,0 +1,29 @@
+h1{
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 50px;
+}
+h3{
+    padding-bottom: 20px;
+}
+a.orange{
+    color:orange
+}
+a.jaune{
+    color:yellow
+
+}
+a.blanc{
+    color:white
+
+}
+a.bleu{
+    color:blue
+}
+
+.Cartes{
+    position: absolute;
+    margin-left: 18px;
+    top: 45%;
+
+}
