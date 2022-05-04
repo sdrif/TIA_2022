@@ -180,21 +180,21 @@ write_to_chars(3,"3 ").
 
 regle_rep(occupee,5,
  [ [deplacer],3,[coureur],3, [case],2, [occupee] ],
- [ Non. ] ).
+ [ "Non","." ] ). %double guillemet si maj pcq sinon il croit que c'est une variable
 
 regle_rep(occupe,5,
  [ [deplacer],3,[coureur],3, [case],2, [occupe] ],
- [ Non. ] ).
+ [ "Non","." ] ).
 
 % ----------------------------------------------------------------% 
 %Puis-je depasser au-dessus d'un groupe de coureurs ?
 regle_rep(depasser,5,
  [ [depasser] ],
- [ Oui, il, est, permis, de, depasser, par, le, bas-cote, de, la, route,pour, autant, que, le, coureur, arrive, sur, une, case ,non, occupee.,Si, ce, n,'\'',est, pas, le, cas, le,'\,', coureur, chute, et, entraine, dans,sa, chute, le, groupe, de, coureurs, qu,'\'',il, voulait, depasser. ] ).
+ [ "Oui", il, est, permis, de, depasser, par, le, bas-cote, de, la, route,pour, autant, que, le, coureur, arrive, sur, une, case ,non, occupee,".","Si", ce, n,'\'',est, pas, le, cas, le,',', coureur, chute, et, entraine, dans,sa, chute, le, groupe, de, coureurs, qu,'\'',il, voulait, depasser,"." ] ).
 
 regle_rep(dpasser,5,
  [ [dpasser] ],
- [ Oui, il, est, permis, de, depasser, par, le, bas-cote, de, la, route,pour, autant, que, le, coureur, arrive, sur, une, case ,non, occupee.,Si, ce, n,'\'',est, pas, le, cas, le,'\,', coureur, chute, et, entraine, dans,sa, chute, le, groupe, de, coureurs, qu,'\'',il, voulait, depasser. ] ).
+ [ "Oui", il, est, permis, de, depasser, par, le, bas-cote, de, la, route,pour, autant, que, le, coureur, arrive, sur, une, case ,non, occupee,".","Si", ce, n,'\'',est, pas, le, cas, le,',', coureur, chute, et, entraine, dans,sa, chute, le, groupe, de, coureurs, qu,'\'',il, voulait, depasser,"." ] ).
 
 % ----------------------------------------------------------------% 
 %Je joue pour le 3e coureur de l'equipe d'Italie. Quelle carte secondes me conseillez-vous de jouer ?
