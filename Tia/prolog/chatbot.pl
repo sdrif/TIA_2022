@@ -37,7 +37,7 @@ stop_server() :-
 stop_server(Port) :-
     http_stop_server(Port, []).
 
-default_port(3000).
+default_port(3500).
 
 
 chatbot(WebSocket) :-
