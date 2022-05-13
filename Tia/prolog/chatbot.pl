@@ -152,7 +152,7 @@ mclef(aspiration,5).
 %Qui commence
 regle_rep(commence,1,
  [ qui, commence, le, jeu ],
- [ c,'\'',est, au, joueur, ayant, la, plus, haute, carte, secondes, de, commencer,'.' ] ).
+ [ "C",'\'',est, au, joueur, ayant, la, plus, haute, carte, secondes, de, commencer,'.' ] ).
 
 % ----------------------------------------------------------------% 
 %Combien de joueurs par equipe
@@ -246,7 +246,8 @@ regle_rep(jouer,5,
 
 regle_rep(gagner,5,
  [ [gagner],5,[jeu],2 ],
- [ "Le joueur qui a gagne est celui dont toute l",'\'',"equipe a atteint l",'\'',"arrivee tout en ayant fait moins de temps que les autres equipes","." ] ).
+ [ "Le joueur qui a gagne est celui dont toute l",'\'',"equipe a atteint l",'\'',
+ "arrivee tout en ayant fait moins de temps que les autres equipes","." ] ).
 
 regle_rep(gagne,5,
  [ [gagner],5,[jeu],2 ],

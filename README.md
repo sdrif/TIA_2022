@@ -1,18 +1,23 @@
 # TIA_2022
 Read me
 
-Dans un premier temps il faut lancer le serveur flask.
-Mais avant ca assurez vous d'être bien dans le dossier Flask a l'aide de la commande ```cd <nom du dossier>```. 
+Dans un premier temps il faut lancer le serveur flask. Assurez vous donc d'avoir flask installé sur votre ordinateur (ainsi que python). Pour installer flask il suffit de faire : ```pip install flask```.
+
+Mais avant ca il faut se rendre dans le dossier Flask a l'aide de la commande ```cd <nom du dossier>```. 
 
 Ensuite une fois dans ce fichier, il faudrait créer un environnement virtuel grace a flask comme ceci :
 
 ```bash 
-py -m venv env
+py -m venv env #ou python a la place de py
 ```
 (A noté que le nom <env> peut être changé et choisi arbitrairement)
 Maintenant, il faut entrer dans l'environnement virtuel :
 ```bash
-env\Scripts\activate
+#Pour windows:
+env\Scripts\activate 
+#Pour Mac ou Linux utilisez ces commandes:
+virtualenv env 
+source env/bin/activate  
 ```
 
 Il faut désormais installer les dépendances :
