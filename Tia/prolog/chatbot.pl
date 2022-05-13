@@ -81,28 +81,13 @@ get_response(Message, Response) :-
 /*                                                                       */
 /* --------------------------------------------------------------------- */
 
-get_chat_response(Message, Response) :-
-    fromStringToAtoms(Message.question, AtomList),
-    get_answer(AtomList, Message.gameboard, Message.players, Answer),
-    Response = _{answer:Answer}.
-
-save_to_file(Question, Answer) :-
-                        open('log.prologhistory', append, File),
-                        write(File,Question),
-                        write(File, '|'),
-                        write(File,Answer),
-                        write(File, '\n'),
-                        close(File).
-% a delete si marche pas (avant)
-
-
 produire_reponse([fin],[L1]) :-
     L1 = [merci, de, m, '\'', avoir, consulte], !.
 
 produire_reponse(L,Rep) :-
     mclef(M,_), member(M,L),
     clause(regle_rep(M,_,Pattern,Rep),Body),
-    match_pattern(Pattern,P),
+    match_pattern(Pattern,L),
     call(Body), !.
 
 produire_reponse(_,[S1,S2,S3]) :-
@@ -151,7 +136,17 @@ mclef(quipe,5).
 mclef(occupee,5).
 mclef(occupe,5).
 mclef(depasser,5).
-mclef(dpasser,5).
+mclef(chances,5).
+mclef(chance,5).
+mclef(interrogation,5).
+mclef(crash,5).
+mclef(cartes,5).
+mclef(carte,5).
+mclef(jouer,5).
+mclef(gagner,5).
+mclef(gagne,5).
+mclef(gagn,5).
+mclef(aspiration,5).
 
 % --------------------------------------------------------------- %
 %Qui commence
@@ -180,21 +175,95 @@ write_to_chars(3,"3 ").
 
 regle_rep(occupee,5,
  [ [deplacer],3,[coureur],3, [case],2, [occupee] ],
- [ "Non","." ] ). %double guillemet si maj pcq sinon il croit que c'est une variable
+ [ "Non, une case ne peut etre occupee que par un seul joueur","." ] ). %double guillemet si maj pcq sinon il croit que c'est une variable
 
 regle_rep(occupe,5,
  [ [deplacer],3,[coureur],3, [case],2, [occupe] ],
- [ "Non","." ] ).
+ [ "Non, une case ne peut etre occupee que par un seul joueur","." ] ).
 
 % ----------------------------------------------------------------% 
 %Puis-je depasser au-dessus d'un groupe de coureurs ?
-regle_rep(depasser,5,
- [ [depasser] ],
- [ "Oui", il, est, permis, de, depasser, par, le, bas-cote, de, la, route,pour, autant, que, le, coureur, arrive, sur, une, case ,non, occupee,".","Si", ce, n,'\'',est, pas, le, cas, le,',', coureur, chute, et, entraine, dans,sa, chute, le, groupe, de, coureurs, qu,'\'',il, voulait, depasser,"." ] ).
 
-regle_rep(dpasser,5,
- [ [dpasser] ],
- [ "Oui", il, est, permis, de, depasser, par, le, bas-cote, de, la, route,pour, autant, que, le, coureur, arrive, sur, une, case ,non, occupee,".","Si", ce, n,'\'',est, pas, le, cas, le,',', coureur, chute, et, entraine, dans,sa, chute, le, groupe, de, coureurs, qu,'\'',il, voulait, depasser,"." ] ).
+regle_rep(depasser,5,
+ [ [depasser],5,[autre],3,[joueur] ],
+ [ "Oui", il, est, permis, de, depasser, par, le, bas,'-',cote, de, la, route, pour, autant, que, le, coureur, arrive, sur, une, case ,non, occupee,".",
+ "Si", ce, n,'\'',est, pas, le, cas,",", le, coureur, chute, et, entraine, dans,sa, chute, le, groupe, de, coureurs, qu,'\'',il, voulait, depasser,"." ] ).
+
+regle_rep(passer,5,
+ [ [passer],5,[autre],3,[joueur] ],
+ [ "Oui", il, est, permis, de, depasser, par, le, bas,'-',cote, de, la, route, pour, autant, que, le, coureur, arrive, sur, une, case ,non, occupee,".",
+ "Si", ce, n,'\'',est, pas, le, cas,",", le, coureur, chute, et, entraine, dans,sa, chute, le, groupe, de, coureurs, qu,'\'',il, voulait, depasser,"." ] ).
+
+% ----------------------------------------------------------------% 
+%A quoi servent les cases chances ?
+
+regle_rep(chances,5,
+ [ [chances],5,[cases],2],
+ [ "Les cases chances permettent de se deplacer jusqu",'\'', "a trois cases en avant ou en arriere","." ] ).
+
+ regle_rep(chance,5,
+ [ [chance],5,[case],2],
+ [ "Les cases chances permettent de se deplacer jusqu,'\'', a trois cases en avant ou en arriere","." ] ).
+
+% ----------------------------------------------------------------% 
+%A quoi servent les cases "?" ?
+
+regle_rep(interrogation,5,
+ [ [interrogation],5,[point],2, [cases],2 ],
+ [ "Ce sont des cases chances","." ] ).
+
+% ----------------------------------------------------------------% 
+%Crash ?
+
+regle_rep(crash,5,
+ [ [crash],5,[occupe] ],
+ [ "Un crash arrive lorsque deux joeurs occupent la meme case","." ] ).
+
+% ----------------------------------------------------------------% 
+%A quoi servent les cartes ?
+
+regle_rep(cartes,5,
+ [ [cartes],5,[secondes],3 ],
+ [ "Les cartes secondes servent a faire avancer un joueur","." ] ).
+
+regle_rep(carte,5,
+ [ [carte],5,[seconde],3 ],
+ [ "Les cartes secondes servent a faire avancer un joueur","." ] ).
+
+% ----------------------------------------------------------------% 
+%Comment jouer au jeu ?
+regle_rep(jouer,5,
+ [ [jouer],5,[jeu],5 ],
+[ "Une", fois, les, cartes, distribuees, ',', le, premier, joueur,',', choisit, une, de, ses, cartes, seconde, et, la, joue,".",
+"Il", deplace, son, premier, coureur, du, nombre, de, secondes,'/',cases, correspondant, a, la, carte, seconde, jouee,".",
+"Vous", pouvez, choisir, vous, '-', meme, l,'\'',allure, de, votre, coureur,".",
+"Le", coureur, peut, se, deplacer, tout, droit, ou, en, diagonal, ',', mais, pas, sur, le, cote, ni, en, arriere,".",
+"Vous", ne, pouvez, pas, finir, sur, une, case, deja, occupee,".",
+'(', plus, d, '\'', informations, en, posant, la, question, '\'', qu, '\'', est,'-',ce, qu, '\'', un, crash,"." ] ).
+
+% ----------------------------------------------------------------% 
+%Comment gagner au jeu ?
+
+regle_rep(gagner,5,
+ [ [gagner],5,[jeu],2 ],
+ [ "Le joueur qui a gagne est celui dont toute l",'\'',"equipe a atteint l",'\'',"arrivee tout en ayant fait moins de temps que les autres equipes","." ] ).
+
+regle_rep(gagne,5,
+ [ [gagner],5,[jeu],2 ],
+ [ "Le joueur qui a gagne est celui dont toute l",'\'',"equipe a atteint l",'\'',"arrivee tout en ayant fait moins de temps que les autres equipes","." ] ).
+
+regle_rep(gagn,5,
+ [ [gagner],5,[jeu],2 ],
+ [ "Le joueur qui a gagne est celui dont toute l",'\'',"equipe a atteint l",'\'',"arrivee tout en ayant fait moins de temps que les autres equipes","." ] ).
+
+% ----------------------------------------------------------------% 
+%A quoi sert le bouton aspiration ?
+
+regle_rep(aspiration,5,
+ [ [aspiration],5,[bouton],4 ],
+ [ "Le bouton aspiration sert a augmenter son nombre de case de un si et seulement si la case desiree se finissait a cote", ',', "ou juste derriere", ',', "un autre joueur", ".",
+ "Vous pouvez choisir de l", '\'', "utiliser ou non en fonction de si vous cliquez sur le bouton ou non",".",'(',"Vous pouvez voir son etat juste au",'-',"dessus",".",
+ "Si vous voulez l",'\'',"utiliser son etat doit etre egal a true",',',"sinon a false",')', "." ] ).
 
 % ----------------------------------------------------------------% 
 %Je joue pour le 3e coureur de l'equipe d'Italie. Quelle carte secondes me conseillez-vous de jouer ?
@@ -333,10 +402,10 @@ string_to_number_aux([],Result,Result).
 %  which it is the written representation.
 
 string_to_atomic([C|Chars],Number) :-
-    string_to_number([C|Chars],Number), !.
+	string_to_number([C|Chars],Number), !.
 
-string_to_atomic(String,Atom) :- atom_codes(Atom,String).
-% assuming previous clause failed.
+string_to_atomic(String,Atom) :- name(Atom,String).
+  % assuming previous clause failed.
 
 
 /*****************************************************************************/
@@ -348,10 +417,10 @@ extract_atomics(String,ListOfAtomics) :-
     remove_initial_blanks(String,NewString),
     extract_atomics_aux(NewString,ListOfAtomics).
 
-    extract_atomics_aux([C|Chars],[A|Atomics]) :-
+extract_atomics_aux([C|Chars],[A|Atomics]) :-
     extract_word([C|Chars],Rest,Word),
     string_to_atomic(Word,A),       % <- this is the only change
-extract_atomics(Rest,Atomics).
+    extract_atomics(Rest,Atomics).
 
 extract_atomics_aux([],[]).
 
@@ -375,10 +444,14 @@ clean_string([C|[]],[C]).
 %  Reads a line of input, removes all punctuation characters, and converts
 %  it into a list of atomic terms, e.g., [this,is,an,example].
 
-read_atomics(Input, ListOfAtomics) :-
-
-    clean_string(Input,Cleanstring),
-    extract_atomics(Cleanstring,ListOfAtomics).
+read_atomics(QuestionString, ListOfAtomics) :-
+   writeln(QuestionString),
+   string_codes(QuestionString, QuestionCodes),
+   writeln(QuestionCodes),
+	clean_string(QuestionCodes,Cleanstring),
+   writeln(Cleanstring),
+	extract_atomics(Cleanstring,ListOfAtomics),
+   writeln(ListOfAtomics).
 
 
 
@@ -387,18 +460,6 @@ read_atomics(Input, ListOfAtomics) :-
 /*        PRODUIRE_REPONSE : ecrit la liste de strings                   */
 /*                                                                       */
 /* --------------------------------------------------------------------- */
-
-transformer_reponse_en_string(Li,Lo) :- flatten_strings_in_sentences(Li,Lo).
-
-flatten_strings_in_sentences([],[]).
-flatten_strings_in_sentences([W|T],S) :-
-    string_as_list(W,L1),
-    flatten_strings_in_sentences(T,L2),
-    append(L1,L2,S).
-
-% Pour SWI-Prolog
-string_as_list(W,L) :- string_to_list(W,L).
-
 
 ecrire_reponse(L) :-
    nl, write('QBot :'),

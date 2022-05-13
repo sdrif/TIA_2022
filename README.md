@@ -20,9 +20,10 @@ Il faut désormais installer les dépendances :
 pip install -r requirements.txt
 ```
 
-Puis, il faudra donner à flask son fichier python d'entrée comme ceci:
+Puis, il faudra donner à flask son fichier python d'entrée comme ceci (ainsi que si vous le désirer d'utiliser le mode debugg pour que flask se rafraichisse automatiquement a chaque fois que vous modifiez votre code):
 ```bash
 set FLASK_APP=app/__init__.py
+set FLASK_DEBUG=1
 ```
 
 Finalement lancez le serveur flask:

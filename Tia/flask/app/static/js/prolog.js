@@ -5,6 +5,7 @@ document.getElementById("chatbot-question").onkeydown = getChatbotQuestion;
 function getChatbotQuestion(event) {
     if (event.key === "Enter") {
         sendMessage(chatbotConnection, this.value);
+        console.log(this.value)
         this.value = "";
     }
     ;
@@ -21,7 +22,7 @@ function sendMessage(connection, message) {
 }
 
 function openChatbotWebSocket() {
-    const connection = new WebSocket("ws://localhost:3000/chatbot")
+    const connection = new WebSocket("ws://localhost:3500/chatbot")
     connection.onerror = (error) => {
         console.log(error)
     }
