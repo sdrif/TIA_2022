@@ -1,9 +1,9 @@
 //game play: contre la montre, premier arrivé ou total de l'équipe.
-// peut être import Math 
+// peut être import Math
 
 //Players dictionnary
 let players = {
-    Italie:{1:[58,0],
+    Italie:{1:[0,0],
     2:[0,1],
     3:[0,2], 
     cards:{number:0,card:[]}
@@ -121,6 +121,7 @@ let map={"0,0":[123,86],"1,0":[177,86],"2,0":[230,86],"3,0":[285,86],"4,0":[337,
 ,"67,2":[0,0],"68,2":[0,0],"69,2":[0,0],"70,2":[0,0],"71,2":[0,0],"72,2":[0,0]}
 
 //61 =96
+
 
 function cards_probability(cards_list){
     var random_cards = [];
@@ -294,8 +295,7 @@ function move(who,carte){
                                 //crash function Fait crash le code par la même occasion change les X de tous les pays par celui ou je veux aller
                                 let x=players[which_player][who][0]
                                 crash(x)
-                                console.log(which_player)
-                                pioche()  
+                                pioche()
                             }
                         }
                     }
@@ -407,10 +407,10 @@ function move(who,carte){
        let x_value= players[which_player][who][0] -60;
        players[which_player]["total"]+=61-x_value;
        players[which_player][who][0]= -1;
-       console.log(players[which_player]["total"])
     }
     
 }
+
 pioche()
 console.log(players["Italie"]["cards"]["card"])
 
@@ -429,7 +429,6 @@ function crash(x){
             }
         }
     }
-    console.log(players)
 }
 
 
@@ -467,16 +466,15 @@ function draw(){
         
     }
     if(player == "Allemagne"){
-        color = "white";
-        
+        color = "black";
     }
+
     spanText.style.color = color;
     
     ctx.drawImage(image,30,0)
     //on dessine tous les pions  
 
     for(let i =1; i<= 3; i++){
-        console.log("iciiii")
         if(players["Italie"][i][0] !== -1){
             drawCircle(map[players["Italie"][i][0].toString()+','+players["Italie"][i][1].toString()][0], map[players["Italie"][i][0].toString()+','+players["Italie"][i][1].toString()][1], "blue");
         }
@@ -499,33 +497,160 @@ function drawCircle(x, y, color){
     ctx.arc(x, y, 20, 0, Math.PI *2, false);
     ctx.stroke();
     ctx.fill();
-  } 
-  
+  }
 
-  
+//minimax
 
-  
+function canMove(country, player, card) {
+
+    let initPos = players[country][player][0];
+    let finalPos = initPos + card;
+
+    let posList = [];
+
+    for (const c in players) {
+        if (c !== "turn_player") {
+            for (var j=1; j<4; j++) {
+                if (players[c][j][0] >= initPos && players[c][j][0] <= finalPos) {
+                    posList.push(players[c][j][0])
+                }
+            }
+        }
+    }
+
+    for (let i=initPos+1; i<= finalPos; i++) {
+        if (posList.includes(i)) {
+            if (posList.filter(x => x === i).length === 2) {
+                let pos = "" + i + ",2";
+                if (map[pos]===undefined) {
+                    // S'il y a 2 joueur et qu'il n'y a pas de 3e case possible
+                    return false;
+                }
+            } else if (posList.filter(x => x === i).length === 3) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+function canWin(country, player, card) {
+
+    let initPos = players[country][player][0];
+    let finalPos = initPos + card;
+
+    if (initPos+card-62 < 0) {
+        // card n'est pas assez grand pour gagner
+        return false;
+    } else {
+        return canMove(country, player, card);
+    }
+
+}
+
+function whichMove(country, player, card) {
+
+    let score = 0;
+
+    if (!canMove(country, player, card)) {
+        score = -15;
+    } else {
+        score = 15 + ((players[country][player][0]+card) /10);
+    }
+
+    if (canWin(country, player, card)) {
+        score = 50 + ((players[country][player][0]+card-62) /10);
+    }
+
+    return score;
+}
+
+
+function max(score, bestScore) {
+    if (score >= bestScore) {
+        return score;
+    }
+    else {
+        return bestScore;
+    }
+}
+
+function min(score, bestScore) {
+    if (score <= bestScore) {
+        return score;
+    }
+    else {
+        return bestScore;
+    }
+}
+
+
+function minimax(country, info, depth, isMaximizing) {
+    if (depth === 0) {
+        return whichMove(country, info[0], info[1]);
+    }
+
+    if (isMaximizing) {
+
+        let bestScore = -Infinity;
+        let movement = ""
+        for (let i=1; i<4; i++) {
+
+            let cards = players[country]["cards"]["card"]
+
+            for (let j=0; j<cards.length; j++) {
+                movement = "" + i + "-avance-" + cards[j];
+                let score = minimax(country, [i, cards[j]], depth-1, false);
+                bestScore = max(score, bestScore);
+            }
+        }
+
+        return movement;
+    } else {
+
+        let bestScore = Infinity;
+        let movement = ""
+        for (let i=1; i<4; i++) {
+            let cards = players[country]["cards"]["card"];
+            for (let j=0; j<cards.length; j++) {
+                movement = "" + i + "-avance-" + cards[j];
+                let score = minimax(country, [i, cards[j]], depth-1, true);
+                bestScore = min(score, bestScore);
+            }
+        }
+        return movement;
+    }
+}
+
+
+
+
 function order_get(){
     var order_game = document.getElementById('order').value;
     document.getElementById('order').value = ""; //reset the input when we added the task
-    console.log(order_game)
-    if (order_game == "" || order_game == " " || ! order_game){ //if it contains space, I don't consider that as void (en francais : si ca contient un espace je ne considère pas l'ordre comme une tache vide)
+    if (order_game === "" || order_game === " " || ! order_game){ //if it contains space, I don't consider that as void (en francais : si ca contient un espace je ne considère pas l'ordre comme une tache vide)
         alert("Enter a command")
 
     } else {
-        orderCommand(order_game);
-        if(players["turn_player"]=="Italie"){
+        if(players["turn_player"]==="Italie"){
+            orderCommand(order_game);
             players["turn_player"] = "Hollande";
-        }
-        else if(players["turn_player"]=="Hollande"){
+            draw();
+            orderCommand(minimax("Hollande", [], 3, true));
             players["turn_player"] = "Belgique";
+            draw();
         }
-        else if(players["turn_player"]=="Belgique"){
+
+        else if(players["turn_player"]==="Belgique"){
+            orderCommand(order_game);
             players["turn_player"] = "Allemagne";
-        }
-        else if(players["turn_player"] = "Allemagne"){
+            draw();
+            orderCommand(minimax("Allemagne", [], 3, true));
             players["turn_player"] = "Italie";
+            draw();
         }
+
         draw();
         end_game()
     }
