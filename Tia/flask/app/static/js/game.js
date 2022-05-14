@@ -159,6 +159,7 @@ function orderCommand(order){
             throw new Error('This player is already on the finish line.')
         }
         else{
+            document.getElementById("error").innerHTML="";
             move(instruction[0],instruction2)
         }   
     }
