@@ -4,26 +4,26 @@
 //Players dictionnary
 let players = {
     Italie:{1:[0,0],
-    2:[0,1],
-    3:[0,2], 
+    2:[0,0],
+    3:[0,0],
     cards:{number:0,card:[]}
     ,aspiration:false,total:0},
 
-    Hollande:{1:[1,0], //robot
-    2:[1,1],
-    3:[1,2], 
+    Hollande:{1:[0,0], //robot
+    2:[0,0],
+    3:[0,0],
     cards:{number:0,card:[]},
     aspiration:false,total:0},
 
-    Belgique:{1:[2,0],
-    2:[2,1],
-    3:[2,2], 
+    Belgique:{1:[0,0],
+    2:[0,0],
+    3:[0,0],
     cards:{number:0,card:[]},
     aspiration:false,total:0},
 
-    Allemagne:{1:[3,0], //robot
-    2:[3,1],
-    3:[4,0], 
+    Allemagne:{1:[0,0], //robot
+    2:[0,0],
+    3:[0,0],
     cards:{number:0,card:[]},
     aspiration:false,total:0},
 
@@ -564,6 +564,10 @@ function whichMove(country, player, card) {
 
     if (canWin(country, player, card)) {
         score = 50 + ((players[country][player][0]+card-62) /10);
+    }
+
+    if (players[country][player][0]>=62) {
+        score = 0
     }
 
     return score;
