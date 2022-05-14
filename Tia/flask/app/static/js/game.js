@@ -155,16 +155,16 @@ function orderCommand(order){
     let which_player= players["turn_player"]
     if(players[which_player]["cards"]["card"].includes(instruction2)){
         if(players[which_player][instruction[0]][0]===-1){
-            document.getElementById("error").innerHTML = "This player is already on the finish line.";
+            //document.getElementById("error").innerHTML = "This player is already on the finish line.";
             throw new Error('This player is already on the finish line.')
         }
         else{
-            document.getElementById("error").innerHTML="";
+            //document.getElementById("error").innerHTML="";
             move(instruction[0],instruction2)
         }   
     }
     else{
-        document.getElementById("error").innerHTML = "You don\'t have this card";
+        //document.getElementById("error").innerHTML = "You don\'t have this card";
         throw new Error("You don\'t have this card")
     }
 }
@@ -502,7 +502,7 @@ function drawCircle(x, y, color){
     ctx.fill();
   }
 
-//minimax
+//------------------------------------Minimax/Alphabeta-------------------------------------------
 
 function canMove(country, player, card) {
 
@@ -589,7 +589,7 @@ function min(score, bestScore) {
 }
 
 
-function minimax(country, info, depth, isMaximizing) {
+function minimax(country, info, depth, alpha, beta, isMaximizing) {
     if (depth === 0) {
         return whichMove(country, info[0], info[1]);
     }
@@ -604,8 +604,12 @@ function minimax(country, info, depth, isMaximizing) {
 
             for (let j=0; j<cards.length; j++) {
                 movement = "" + i + "-avance-" + cards[j];
-                let score = minimax(country, [i, cards[j]], depth-1, false);
+                let score = minimax(country, [i, cards[j]], depth-1, alpha, beta,false);
                 bestScore = max(score, bestScore);
+                alpha = max(alpha, bestScore)
+                if (beta <= alpha) {
+                    break;
+                }
             }
         }
 
@@ -618,8 +622,12 @@ function minimax(country, info, depth, isMaximizing) {
             let cards = players[country]["cards"]["card"];
             for (let j=0; j<cards.length; j++) {
                 movement = "" + i + "-avance-" + cards[j];
-                let score = minimax(country, [i, cards[j]], depth-1, true);
+                let score = minimax(country, [i, cards[j]], depth-1, alpha, beta,true);
                 bestScore = min(score, bestScore);
+                beta = min(beta, bestScore)
+                if (beta <= alpha) {
+                    break;
+                }
             }
         }
         return movement;
@@ -640,7 +648,7 @@ function order_get(){
             orderCommand(order_game);
             players["turn_player"] = "Hollande";
             draw();
-            orderCommand(minimax("Hollande", [], 3, true));
+            orderCommand(minimax("Hollande", [], 3, -Infinity, Infinity, true));
             players["turn_player"] = "Belgique";
             draw();
         }
@@ -649,7 +657,7 @@ function order_get(){
             orderCommand(order_game);
             players["turn_player"] = "Allemagne";
             draw();
-            orderCommand(minimax("Allemagne", [], 3, true));
+            orderCommand(minimax("Allemagne", [], 3, -Infinity, Infinity, true));
             players["turn_player"] = "Italie";
             draw();
         }
