@@ -155,16 +155,16 @@ function orderCommand(order){
     let which_player= players["turn_player"]
     if(players[which_player]["cards"]["card"].includes(instruction2)){
         if(players[which_player][instruction[0]][0]===-1){
-            //document.getElementById("error").innerHTML = "This player is already on the finish line.";
+            document.getElementById("error").innerHTML = "This player is already on the finish line.";
             throw new Error('This player is already on the finish line.')
         }
         else{
-            //document.getElementById("error").innerHTML="";
+            document.getElementById("error").innerHTML="";
             move(instruction[0],instruction2)
         }   
     }
     else{
-        //document.getElementById("error").innerHTML = "You don\'t have this card";
+        document.getElementById("error").innerHTML = "You don\'t have this card";
         throw new Error("You don\'t have this card")
     }
 }
