@@ -671,6 +671,16 @@ function order_get(){
     }
 }
 
+/**Coup conseillé */
+function tips(){
+    who = players["turn_player"]
+    advice = minimax(who, [], 3, -Infinity, Infinity, true)
+    the_moove= "Le meilleur coup a jouer est : " + advice
+    console.log(the_moove);
+    //document.getElementById("Advice").innerHTML = advice;
+    draw();
+}
+
 function changement_aspi(){
     who = players["turn_player"]
     if(players[who]["aspiration"]===false){

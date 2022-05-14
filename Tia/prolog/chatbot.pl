@@ -123,6 +123,76 @@ sublistrem(SL,[_|T],Lr) :- sublistrem(SL,T,Lr).
 prefixrem([],L,L).
 prefixrem([H|T],[H|L],Lr) :- prefixrem(T,L,Lr).
 
+% --------------------------------------------------
+% -------------- Levenshtein Distance --------------
+% -- Custom implementation of Levenshtein         --
+% -- distance that allow to compute distance      --
+% -- between sentences and give a score based on  --
+% -- mean.                                        --
+% --------------------------------------------------
+
+% word_length/2 : Compute the size of a word (word is expected as a list of characters).
+word_length([], 0).
+word_length([_|T], L1) :- word_length(T, L), L1 is L + 1.
+
+% levenshtein/3 : Compute the levensthein distance between 2 given words
+%                 (given words are expected as lists of characters).
+levenshtein(Mot1, [], Score) :- word_length(Mot1, Score),!.
+levenshtein([], Mot2, Score) :- word_length(Mot2, Score), !.
+levenshtein([S|T1], [S|T2], Score) :- levenshtein(T1, T2, Score), !.
+levenshtein([M1H|M1T], [M2H|M2T], Score) :-
+                            levenshtein(M1T, [M2H|M2T], Score1), 
+                            levenshtein([M1H|M1T], M2T, Score2), 
+                            levenshtein(M1T, M2T, Score3),
+                            Y is min(Score2, Score3),
+                            Z is min(Y, Score1), 
+                            Score is Z + 1.
+
+% atom_levenshtein/3 : Compute the levensthein distance between 2 given words
+%                      (given words are expected as atoms)
+atom_levenshtein(Mot1, Mot2, Score) :-  atom_chars(Mot1, X),
+                                        atom_chars(Mot2, Y),
+                                        levenshtein(X,Y,Score).
+
+% sentence_score/3 : Compute a list of score based on given sentences
+%                    (given sentences exptected as lists of atoms).                   
+sentence_score_list([], [] ,[]).
+sentence_score_list(_, [], []).
+sentence_score_list([], _, []).
+sentence_score_list([H], [S], [Score]):- atom_levenshtein(H,S,Score), ! .
+sentence_score_list([H|T], [Z|Y], [Score3|Score2]) :-   sentence_score_list(T, Y, Score2),
+                                                        atom_levenshtein(H, Z, Score3).
+
+
+% sentence_score/3 : Compute the score of a sentence based on another one (custom score based on the mean).
+%                    (given sentences exptected as lists of atoms).  
+sentence_score(Sentence1, Sentence2, Score) :-
+                                                % filter_words(Sentence1, Sent1),
+                                                % filter_words(Sentence2, Sent2),
+                                                % replace_synonyms(Sent1, X),
+                                                % replace_synonyms(Sent2, Z),
+                                                % sort(Sentence1, S1),
+                                                % sort(Sentence2, S2),
+                                                sentence_score_list(Sentence1, Sentence2, ScoreList),
+                                                average(ScoreList, Score).
+
+% answers_score/2 : Generate a list with all answers and their score of custom levenshtein distance with %                   Setence1 (given sentence exptected as list of atoms).
+answers_score(Sentence1, X) :- findall([Question,Score], (answer(Question, _,_,_,_), generate_sentence_scores(Sentence1, Question, Score)), X).
+
+% min_score/3 : Give the question and the score of the question with the minimum score from a list of 
+%               answers and their score.
+min_score([[X,Y]], X, Y).
+min_score([[Q,S]|T], Q, S) :- min_score(T, _, TMin), S =< TMin.
+min_score([[_,S]|T], QMin, TMin) :- min_score(T, QMin, TMin), TMin < S.
+
+% bot_response/2 : Return the closest answer at the question given based of questions knowledge base.
+bot_response(Question, Answer, Board, Pions, OriginalQuestion) :-   print(Question),
+                                    answers_score(Question, X),
+                                    min_score(X, QMin, QScore),
+                                    write(QScore),
+                                    ((QScore >= 3) -> talk(someuser,'',OriginalQuestion,Answer) ; 
+                                    answer(QMin,Board, Pions, OriginalQuestion,Answer)).
+
 
 
 % ----------------------------------------------------------------%
@@ -147,12 +217,13 @@ mclef(gagner,5).
 mclef(gagne,5).
 mclef(gagn,5).
 mclef(aspiration,5).
+mclef(coup,5).
 
 % --------------------------------------------------------------- %
 %Qui commence
 regle_rep(commence,1,
  [ qui, commence, le, jeu ],
- [ "C",'\'',est, au, joueur, ayant, la, plus, haute, carte, secondes, de, commencer,'.' ] ).
+ [ C,'\'',est, au, joueur, ayant, la, plus, haute, carte, secondes, de, commencer,'.' ] ).
 
 % ----------------------------------------------------------------% 
 %Combien de joueurs par equipe
@@ -246,8 +317,7 @@ regle_rep(jouer,5,
 
 regle_rep(gagner,5,
  [ [gagner],5,[jeu],2 ],
- [ "Le joueur qui a gagne est celui dont toute l",'\'',"equipe a atteint l",'\'',
- "arrivee tout en ayant fait moins de temps que les autres equipes","." ] ).
+ [ "Le joueur qui a gagne est celui dont toute l",'\'',"equipe a atteint l",'\'',"arrivee tout en ayant fait moins de temps que les autres equipes","." ] ).
 
 regle_rep(gagne,5,
  [ [gagner],5,[jeu],2 ],
@@ -265,6 +335,13 @@ regle_rep(aspiration,5,
  [ "Le bouton aspiration sert a augmenter son nombre de case de un si et seulement si la case desiree se finissait a cote", ',', "ou juste derriere", ',', "un autre joueur", ".",
  "Vous pouvez choisir de l", '\'', "utiliser ou non en fonction de si vous cliquez sur le bouton ou non",".",'(',"Vous pouvez voir son etat juste au",'-',"dessus",".",
  "Si vous voulez l",'\'',"utiliser son etat doit etre egal a true",',',"sinon a false",')', "." ] ).
+
+% ----------------------------------------------------------------% 
+%Quel est le coup que vous me conseillé ?
+
+regle_rep(coup,5,
+ [ [coup],5,[jouer],3, [conseil],3 ],
+ [ "Pour savoir le coup que nous vous conseillons, appuyez sur le bouton Tips","." ] ).
 
 % ----------------------------------------------------------------% 
 %Je joue pour le 3e coureur de l'equipe d'Italie. Quelle carte secondes me conseillez-vous de jouer ?
@@ -458,7 +535,7 @@ read_atomics(QuestionString, ListOfAtomics) :-
 
 /* --------------------------------------------------------------------- */
 /*                                                                       */
-/*        PRODUIRE_REPONSE : ecrit la liste de strings                   */
+/*        ecrire_reponse : ecrit la liste de strings                   */
 /*                                                                       */
 /* --------------------------------------------------------------------- */
 
