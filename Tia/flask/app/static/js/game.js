@@ -121,8 +121,11 @@ let map={"0,0":[123,86],"1,0":[177,86],"2,0":[230,86],"3,0":[285,86],"4,0":[337,
 ,"67,2":[0,0],"68,2":[0,0],"69,2":[0,0],"70,2":[0,0],"71,2":[0,0],"72,2":[0,0]}
 
 //61 =96
-
-
+/**
+ * Calculates the probability that a card lands and draws one at random
+ * @param cards_list
+ * @returns {*} the choosen card
+ */
 function cards_probability(cards_list){
     var random_cards = [];
     for(let i =1; i<= 12; i++){
@@ -133,7 +136,10 @@ function cards_probability(cards_list){
     var probability = Math.floor(Math.random()*random_cards.length);
     return random_cards[probability];
 }
-
+/**
+ * Draw 5 cards if player has 0 cards
+ * Upload the list of players card's
+ * */
 function pioche(){
     for(let playerss in players){
         if(playerss != "turn_player"){
@@ -149,6 +155,11 @@ function pioche(){
     }
 }
 
+/**
+ * Handle the order and call the move function
+ * @param order, the order given
+ * Display an error message if the order is impossible
+ */
 function orderCommand(order){
     let instruction = order.split("-")
     let instruction2= parseInt(instruction[2])
@@ -169,7 +180,11 @@ function orderCommand(order){
     }
 }
 
-
+/**
+ * Takes care of moving the pawns if the move is feasible
+ * @param who which player to move
+ * @param carte which card to play
+ */
 function move(who,carte){
     let move_ok_1 = true;
     let move_ok_2 = true;
@@ -417,6 +432,10 @@ function move(who,carte){
 pioche()
 console.log(players["Italie"]["cards"]["card"])
 
+/**
+ * Crash all the player on the same x position
+ * @param x Position x of the player
+ */
 function crash(x){
     for(element in players){
         if(element !== "turn_player"){
@@ -445,7 +464,9 @@ canvas.width= 1200;
 canvas.height = 700;
 
 
-
+/**
+ * Draw the map
+ */
 function draw(){
     let player =  players["turn_player"];
     document.getElementById("player").innerHTML = player;
@@ -493,6 +514,13 @@ function draw(){
      }
 }
 draw()
+
+/**
+ * Draw the pion of the map
+ * @param x postion
+ * @param y position
+ * @param color color of the pion
+ */
 function drawCircle(x, y, color){
     //fonction permettant de faire un rond
     ctx.fillStyle = color;
@@ -503,7 +531,13 @@ function drawCircle(x, y, color){
   }
 
 //------------------------------------Minimax/Alphabeta-------------------------------------------
-
+/**
+ * Check if the move is right
+ * @param country which country is playing
+ * @param player which player is playing
+ * @param card which country is playing
+ * @returns {boolean}
+ */
 function canMove(country, player, card) {
     //Check si le deplacement est faisable
     let initPos = players[country][player][0];
@@ -538,6 +572,13 @@ function canMove(country, player, card) {
     return true;
 }
 
+/**
+ * Check if the player can win
+ * @param country which country is playing
+ * @param player which player is playing
+ * @param card which card is playing
+ * @returns {boolean}
+ */
 function canWin(country, player, card) {
     //check if someone can win or not
     let initPos = players[country][player][0];
@@ -552,6 +593,13 @@ function canWin(country, player, card) {
 
 }
 
+/**
+ * Check the move and attribute a score to him
+ * @param country same
+ * @param player same
+ * @param card same
+ * @returns {number} the score
+ */
 function whichMove(country, player, card) {
     //Compute the score of the moove
     let score = 0;
@@ -573,7 +621,12 @@ function whichMove(country, player, card) {
     return score;
 }
 
-
+/**
+ * Score maximum
+ * @param score
+ * @param bestScore
+ * @returns {*}
+ */
 function max(score, bestScore) {
     if (score >= bestScore) {
         return score;
@@ -583,6 +636,12 @@ function max(score, bestScore) {
     }
 }
 
+/**
+ * Score minimum
+ * @param score
+ * @param bestScore
+ * @returns {*}
+ */
 function min(score, bestScore) {
     if (score <= bestScore) {
         return score;
@@ -592,7 +651,16 @@ function min(score, bestScore) {
     }
 }
 
-
+/**
+ * MinMax algorythme
+ * @param country
+ * @param info
+ * @param depth = 3
+ * @param alpha Alpha beta algorythme
+ * @param beta
+ * @param isMaximizing
+ * @returns {string|number}
+ */
 function minimax(country, info, depth, alpha, beta, isMaximizing) {
     //Minimax algorithm
     if (depth === 0) {
@@ -640,8 +708,9 @@ function minimax(country, info, depth, alpha, beta, isMaximizing) {
 }
 
 
-
-
+/**
+ * Get the order and change the player turn
+ */
 function order_get(){
     var order_game = document.getElementById('order').value;
     document.getElementById('order').value = ""; //reset the input when we added the task
@@ -682,6 +751,9 @@ function tips(){
     draw();
 }
 
+/**
+ * Changement of the aspiration (true false)
+ */
 function changement_aspi(){
     who = players["turn_player"]
     if(players[who]["aspiration"]===false){
@@ -693,6 +765,9 @@ function changement_aspi(){
     draw()
 }
 
+/**
+ * End the game
+ */
 function end_game(){
     count=0
     for(element in players){
