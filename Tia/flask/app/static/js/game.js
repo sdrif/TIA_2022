@@ -677,7 +677,7 @@ function tips(){
     advice = minimax(who, [], 3, -Infinity, Infinity, true)
     the_moove= "Le meilleur coup a jouer est : " + advice
     console.log(the_moove);
-    //document.getElementById("Advice").innerHTML = advice;
+    document.getElementById("the_moove").innerHTML = the_moove;
     draw();
 }
 
