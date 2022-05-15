@@ -91,9 +91,9 @@ produire_reponse(L,Rep) :-
     call(Body), !.
 
 produire_reponse(_,[S1,S2,S3]) :-
-   S1 = [je, ne, sais, pas, '.'],
-   S2 = [les, etudiants, vont, m, '\'', aider, '.' ],
-   S3 = ['vous le verrez !'].
+   S1 = ["Je", ne, sais, pas, '.'],
+   S2 = ["Les", etudiants, vont, m, '\'', aider, '.' ],
+   S3 = ['Vous le verrez !'].
 
 match_pattern(Pattern,Lmots) :-
     sublist(Pattern,L_mots).
