@@ -505,7 +505,7 @@ function drawCircle(x, y, color){
 //------------------------------------Minimax/Alphabeta-------------------------------------------
 
 function canMove(country, player, card) {
-
+    //Check si le deplacement est faisable
     let initPos = players[country][player][0];
     let finalPos = initPos + card;
 
@@ -539,7 +539,7 @@ function canMove(country, player, card) {
 }
 
 function canWin(country, player, card) {
-
+    //check if someone can win or not
     let initPos = players[country][player][0];
     let finalPos = initPos + card;
 
@@ -553,7 +553,7 @@ function canWin(country, player, card) {
 }
 
 function whichMove(country, player, card) {
-
+    //Compute the score of the moove
     let score = 0;
 
     if (!canMove(country, player, card)) {
@@ -594,6 +594,7 @@ function min(score, bestScore) {
 
 
 function minimax(country, info, depth, alpha, beta, isMaximizing) {
+    //Minimax algorithm
     if (depth === 0) {
         return whichMove(country, info[0], info[1]);
     }
@@ -665,7 +666,7 @@ function order_get(){
             players["turn_player"] = "Italie";
             draw();
         }
-
+        document.getElementById("the_moove").innerHTML = the_moove;document.getElementById("the_moove").innerHTML = "";
         draw();
         end_game()
     }
